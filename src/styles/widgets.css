@@ -1,0 +1,282 @@
+/* Dashboard widgets: bento grid, impulse slider, month map and achievements. */
+
+/* ---------- Bento grid ---------- */
+.bento {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+
+.bento > * {
+  min-width: 0;
+}
+
+@media (min-width: 768px) {
+  .bento {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .bento {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+/* ---------- Container queries: widgets adapt to their own width, not the viewport ---------- */
+.cq {
+  container-type: inline-size;
+}
+
+.quick__stats {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.6rem;
+}
+
+@container (min-width: 24rem) {
+  .quick__stats {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.quick__stat {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--paper);
+}
+
+.quick__stat dt {
+  color: var(--ink-2);
+  font-size: 0.8rem;
+}
+
+.quick__stat dd {
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.quick__stat dd[data-effect='worse'] {
+  color: var(--bad);
+}
+
+.quick__stat dd[data-effect='better'] {
+  color: var(--good);
+}
+
+/* ---------- Range slider ---------- */
+.slider {
+  width: 100%;
+  height: 2.75rem;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+  accent-color: var(--pen);
+}
+
+.slider::-webkit-slider-runnable-track {
+  height: 0.6rem;
+  border-radius: 999px;
+  background: var(--paper-3);
+}
+
+.slider::-webkit-slider-thumb {
+  width: 1.75rem;
+  height: 1.75rem;
+  margin-top: -0.575rem;
+  border: 3px solid var(--surface);
+  border-radius: 50%;
+  background: var(--pen);
+  box-shadow: var(--elev-soft);
+  appearance: none;
+  transition: transform var(--fast) var(--ease-spring);
+}
+
+.slider:active::-webkit-slider-thumb {
+  transform: scale(1.15);
+}
+
+.slider::-moz-range-track {
+  height: 0.6rem;
+  border-radius: 999px;
+  background: var(--paper-3);
+}
+
+.slider::-moz-range-thumb {
+  width: 1.4rem;
+  height: 1.4rem;
+  border: 3px solid var(--surface);
+  border-radius: 50%;
+  background: var(--pen);
+}
+
+/* ---------- Month map ---------- */
+.month-map {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+@container (min-width: 30rem) {
+  .month-map {
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+  }
+}
+
+.month-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.month-cell[data-level='1'] {
+  background: color-mix(in srgb, var(--pen) 14%, var(--surface));
+}
+
+.month-cell[data-level='2'] {
+  background: color-mix(in srgb, var(--pen) 30%, var(--surface));
+}
+
+.month-cell[data-level='3'] {
+  background: color-mix(in srgb, var(--pen) 48%, var(--surface));
+}
+
+.month-cell[data-level='4'] {
+  border-color: var(--pen);
+  background: var(--pen);
+  color: var(--on-pen);
+}
+
+.month-cell[data-status='future'] {
+  border-style: dashed;
+  color: var(--ink-2);
+}
+
+.month-cell[data-status='today'] {
+  outline: 2.5px solid var(--margin);
+  outline-offset: 2px;
+}
+
+.month-cell[data-shortfall='true'] {
+  border-color: var(--bad);
+  background: var(--bad-bg);
+  color: var(--bad);
+}
+
+/* A coral dot marks a day with a bill due. */
+.month-cell[data-due='true']::after {
+  content: '';
+  position: absolute;
+  bottom: 3px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--margin);
+}
+
+.month-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1rem;
+  color: var(--ink-2);
+  font-size: 0.8rem;
+}
+
+.month-legend__swatch {
+  display: inline-block;
+  width: 0.8rem;
+  height: 0.8rem;
+  margin-right: 0.35rem;
+  border: 1px solid var(--line-2);
+  border-radius: 4px;
+  vertical-align: -1px;
+}
+
+/* ---------- Achievements ---------- */
+.trophy {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--paper);
+}
+
+.trophy__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 12px;
+  background: var(--paper-3);
+  color: var(--ink-2);
+}
+
+.trophy[data-earned='true'] {
+  border-color: transparent;
+  background: var(--marker-50);
+}
+
+.trophy[data-earned='true'] .trophy__icon {
+  background: var(--marker);
+  color: var(--ink);
+}
+
+/* ---------- Scenario chips ---------- */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0.3rem 0.85rem;
+  border: 1.5px solid var(--line-2);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--fast) ease,
+    border-color var(--fast) ease,
+    transform var(--fast) var(--ease-soft);
+}
+
+.chip:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) {
+  .chip:hover {
+    border-color: var(--pen);
+    background: var(--pen-50);
+  }
+}
+
+/* ---------- Empty state ---------- */
+.empty {
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  padding: 1rem 0.5rem;
+  color: var(--ink-2);
+  text-align: center;
+}
+
+.empty img {
+  max-width: 100%;
+  height: auto;
+}

@@ -1,9 +1,9 @@
 import { render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import App from './App';
-import { STORAGE_KEY } from './domain/constants';
-import { createEmptyState } from './domain/seed';
-import { findA11yViolations, openTab, renderApp } from './test/utils';
+import App from '@/App';
+import { STORAGE_KEY } from '@/constants';
+import { createEmptyState } from '@/engine/seed';
+import { findA11yViolations, openTab, renderApp } from '@/test/utils';
 
 const masthead = () => screen.getByRole('banner');
 
@@ -14,7 +14,9 @@ describe('App shell', () => {
     expect(within(masthead()).getByText('₹9,670 left')).toBeInTheDocument();
     expect(screen.getByText('₹262')).toBeInTheDocument();
     expect(screen.getByText(/Low risk/)).toBeInTheDocument();
-    expect(screen.getByRole('img', { name: /Financial health score 82 out of 100: Thriving/ })).toBeInTheDocument();
+    expect(
+      screen.getByRole('img', { name: /Financial health score 82 out of 100: Thriving/ }),
+    ).toBeInTheDocument();
     expect(screen.getByRole('img', { name: /Balance forecast/ })).toBeInTheDocument();
   });
 

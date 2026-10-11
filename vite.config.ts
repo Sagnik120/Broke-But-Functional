@@ -1,6 +1,10 @@
+import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import type { Plugin } from 'vite';
 import { defineConfig } from 'vitest/config';
+
+/** Absolute path to `src`, decoded so folders with spaces resolve correctly. */
+const SRC_DIR = decodeURIComponent(new URL('./src', import.meta.url).pathname);
 
 const CONTENT_SECURITY_POLICY = [
   "default-src 'self'",
@@ -8,6 +12,8 @@ const CONTENT_SECURITY_POLICY = [
   "style-src 'self'",
   "img-src 'self' data:",
   "connect-src 'self'",
+  "worker-src 'self'",
+  "manifest-src 'self'",
   "base-uri 'self'",
   "form-action 'self'",
   "object-src 'none'",
@@ -49,12 +55,35 @@ function preloadCriticalFont(): Plugin {
   };
 }
 
+/**
+ * Splits long-lived vendor code from app code, so a deploy that only changes
+ * the app does not invalidate the cached React and icon bundles.
+ */
+function manualChunks(id: string): string | undefined {
+  // Stylesheets stay with the app CSS, so there is a single render-blocking request.
+  if (!id.includes('node_modules') || id.endsWith('.css')) return undefined;
+  if (id.includes('lucide-react')) return 'vendor-icons';
+  if (id.includes('web-vitals')) return 'vendor-vitals';
+  if (/[\\/]node_modules[\\/](react|react-dom|scheduler)[\\/]/.test(id)) return 'vendor-react';
+  return 'vendor';
+}
+
 export default defineConfig({
-  plugins: [react(), contentSecurityPolicy(), preloadCriticalFont()],
+  plugins: [tailwindcss(), react(), contentSecurityPolicy(), preloadCriticalFont()],
+  resolve: {
+    alias: { '@': SRC_DIR },
+  },
   build: {
     target: 'es2022',
     sourcemap: false,
     cssCodeSplit: true,
+    cssMinify: true,
+    minify: true,
+    reportCompressedSize: true,
+    chunkSizeWarningLimit: 250,
+    rollupOptions: {
+      output: { manualChunks },
+    },
   },
   test: {
     environment: 'jsdom',
@@ -64,7 +93,8 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       include: ['src/**/*.{ts,tsx}'],
-      exclude: ['src/main.tsx', 'src/test/**', 'src/**/*.test.{ts,tsx}', 'src/vite-env.d.ts'],
+      exclude: ['src/main.tsx', 'src/test/**', 'src/**/*.test.{ts,tsx}', 'src/vite-env.d.ts', 'src/types/**'],
+      thresholds: { statements: 90, branches: 85, functions: 90, lines: 90 },
     },
   },
 });

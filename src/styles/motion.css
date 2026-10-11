@@ -104,7 +104,7 @@
 
 /* Views arrive as a short stagger; the first block is never hidden so it paints immediately. */
 .panel > * {
-  animation: rise var(--medium) var(--ease-out) backwards;
+  animation: rise var(--medium) var(--ease-soft) backwards;
 }
 
 .panel > :first-child {
@@ -128,16 +128,16 @@
 }
 
 .list > * {
-  animation: rise var(--medium) var(--ease-out) backwards;
+  animation: rise var(--medium) var(--ease-soft) backwards;
 }
 
 .highlight {
-  animation: sweep var(--slow) var(--ease-out) 200ms backwards;
+  animation: sweep var(--slow) var(--ease-soft) 200ms backwards;
 }
 
 .chart__line--actual {
   stroke-dasharray: 1;
-  animation: draw 900ms var(--ease-out) backwards;
+  animation: draw 900ms var(--ease-soft) backwards;
 }
 
 .chart__line--projected,
@@ -152,22 +152,24 @@
 }
 
 .gauge__value {
-  animation: fill 900ms var(--ease-out) backwards;
-  transition: stroke-dasharray var(--slow) var(--ease-out), stroke var(--medium) ease;
+  animation: fill 900ms var(--ease-soft) backwards;
+  transition:
+    stroke-dasharray var(--slow) var(--ease-soft),
+    stroke var(--medium) ease;
 }
 
 .verdict__stamp {
-  animation: stamp 380ms var(--ease-out) backwards;
+  animation: stamp 380ms var(--ease-soft) backwards;
 }
 
 .verdict {
-  animation: rise var(--medium) var(--ease-out) backwards;
+  animation: rise var(--medium) var(--ease-soft) backwards;
 }
 
 .day-control__day {
   display: inline-block;
   transform-origin: 50% 0;
-  animation: flip var(--medium) var(--ease-out) backwards;
+  animation: flip var(--medium) var(--ease-soft) backwards;
 }
 
 .badge[data-tone='bad'] .badge__dot {
@@ -196,7 +198,7 @@
 
 .boot__mark > * {
   stroke-dasharray: 1;
-  animation: write 1.8s var(--ease-out) infinite backwards;
+  animation: write 1.8s var(--ease-soft) infinite backwards;
 }
 
 .boot__margin {
@@ -223,11 +225,40 @@
 .toast,
 .moves__item,
 .notice {
-  animation: rise var(--medium) var(--ease-out) backwards;
+  animation: rise var(--medium) var(--ease-soft) backwards;
 }
 
 .progress::-webkit-progress-value {
-  transition: width var(--slow) var(--ease-out);
+  transition: width var(--slow) var(--ease-soft);
+}
+
+/* Bento cards arrive as a short stagger; the hero is never hidden so it paints immediately. */
+.bento > * {
+  animation: rise var(--medium) var(--ease-soft) backwards;
+}
+
+.bento > :first-child {
+  animation-name: none;
+}
+
+.bento > :nth-child(2) {
+  animation-delay: 40ms;
+}
+
+.bento > :nth-child(3) {
+  animation-delay: 80ms;
+}
+
+.bento > :nth-child(4) {
+  animation-delay: 120ms;
+}
+
+.bento > :nth-child(n + 5) {
+  animation-delay: 160ms;
+}
+
+.trophy[data-earned='true'] .trophy__icon {
+  animation: pop var(--medium) var(--ease-spring) 300ms backwards;
 }
 
 @media (prefers-reduced-motion: reduce) {

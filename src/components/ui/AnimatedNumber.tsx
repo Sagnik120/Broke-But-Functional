@@ -1,5 +1,5 @@
-import { formatINR } from '../../domain/format';
-import { useAnimatedNumber } from '../../hooks/useAnimatedNumber';
+import { formatINR } from '@/utils/format';
+import { useAnimatedNumber } from '@/hooks/useAnimatedNumber';
 
 interface AnimatedNumberProps {
   value: number;

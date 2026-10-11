@@ -33,12 +33,12 @@ BAND 1 — "Views (src/components)"
     ConfirmButton, AnimatedNumber, PanelSkeleton
   Mark Simulator, Activity and Plans as "lazy-loaded".
 
-BAND 2 — "State (src/state)"
+BAND 2 — "State (src/context)"
   - FinanceProvider (React context + useReducer)
   - Rate limiter (30 changes per 10 seconds)
   - Live-region announcer (screen-reader messages)
 
-BAND 3 — "Domain (src/domain) — pure TypeScript, no React"
+BAND 3 — "Domain (src/engine) — pure TypeScript, no React"
   - sanitize.ts: cleans text, validates amounts and days
   - reducer.ts: all state transitions and limits
   - ledger.ts: computeSnapshot → balance, safe to spend, daily allowance,
@@ -99,11 +99,11 @@ OUTPUT
 
 Replace the OUTPUT section with one of these to get a different artefact.
 
-| Goal | Replace OUTPUT with |
-| --- | --- |
+| Goal                           | Replace OUTPUT with                                                                                                                           |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | Sequence diagram of one action | `Produce a Mermaid sequenceDiagram of the user adding an expense, from keypress to the updated dashboard, including the rate-limiter branch.` |
-| C4 container diagram | `Produce a C4 container diagram in PlantUML (C4-PlantUML).` |
-| Image | `Produce a 16:9 image of the diagram on a cream background with navy text and one blue accent.` |
-| Data model | `Ignore the bands. Produce a Mermaid classDiagram of FinanceState, Transaction, ScheduledPayment, Goal and the derived Snapshot.` |
+| C4 container diagram           | `Produce a C4 container diagram in PlantUML (C4-PlantUML).`                                                                                   |
+| Image                          | `Produce a 16:9 image of the diagram on a cream background with navy text and one blue accent.`                                               |
+| Data model                     | `Ignore the bands. Produce a Mermaid classDiagram of FinanceState, Transaction, ScheduledPayment, Goal and the derived Snapshot.`             |
 
-A hand-maintained version of the diagram is in [ARCHITECTURE.md](ARCHITECTURE.md) and the project [README](../README.md).
+A hand-maintained version of the diagram is in [ARCHITECTURE.md](../ARCHITECTURE.md) and the project [README](../README.md).

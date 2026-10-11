@@ -1,23 +1,8 @@
 /* ---------- Layout ---------- */
-.masthead {
-  border-bottom: 1px solid var(--line);
-  background: var(--surface);
-}
-
-.masthead__inner,
 .panel,
 .footer {
-  width: min(100% - 2rem, 68rem);
+  width: min(100% - 2rem, 78rem);
   margin-inline: auto;
-}
-
-.masthead__inner {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding-top: 1rem;
 }
 
 .brand-block {
@@ -54,7 +39,7 @@
 }
 
 .brand {
-  font-family: var(--font-display);
+  font-family: var(--ff-display);
   font-size: clamp(1.7rem, 1.3rem + 2vw, 2.4rem);
   font-weight: 400;
   line-height: 1.05;
@@ -66,7 +51,7 @@
 }
 
 .brand__tagline {
-  font-family: var(--font-hand);
+  font-family: var(--ff-hand);
   color: var(--ink-2);
 }
 
@@ -138,56 +123,6 @@
   font-size: 0.9rem;
 }
 
-/* ---------- Tabs ---------- */
-.tabs {
-  display: flex;
-  gap: 0.25rem;
-  overflow-x: auto;
-  width: 100%;
-}
-
-.tabs__tab {
-  position: relative;
-  min-height: 2.75rem;
-  padding: 0.5rem 1rem;
-  border: 0;
-  background: none;
-  color: var(--ink-2);
-  font-weight: 600;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: color var(--fast) ease;
-}
-
-/* The underline is drawn like a pen stroke when a tab becomes active. */
-.tabs__tab::after {
-  content: '';
-  position: absolute;
-  inset: auto 0.5rem 0;
-  height: 3px;
-  border-radius: 3px 3px 0 0;
-  background: var(--pen);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform var(--medium) var(--ease-out);
-}
-
-.tabs__tab:hover {
-  color: var(--ink);
-}
-
-.tabs__tab[aria-selected='true'] {
-  color: var(--pen-strong);
-}
-
-.tabs__tab[aria-selected='true']::after {
-  transform: scaleX(1);
-}
-
-.tabs__tab:focus-visible {
-  outline-offset: -3px;
-}
-
 /* ---------- Cards and text ---------- */
 .card {
   display: grid;
@@ -195,14 +130,14 @@
   align-content: start;
   padding: 1.35rem;
   border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border-radius: var(--r-card);
   background-color: var(--surface);
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--elev-soft);
 }
 
 .card__title,
 .section-title {
-  font-family: var(--font-display);
+  font-family: var(--ff-display);
   font-size: 1.6rem;
   font-weight: 400;
   line-height: 1.15;
@@ -214,6 +149,7 @@
 
 .subheading {
   font-size: 1rem;
+  font-weight: 700;
 }
 
 .eyebrow {
@@ -231,7 +167,7 @@
   gap: 1.25rem;
   padding: 1.75rem 1.35rem 1.75rem 3.75rem;
   border-radius: 28px;
-  box-shadow: var(--shadow-lift);
+  box-shadow: var(--elev-lift);
 }
 
 .hero__amount {
@@ -296,15 +232,17 @@
 .stat {
   padding: 1rem 1.1rem;
   border: 1px solid var(--line);
-  border-radius: var(--radius-md);
+  border-radius: var(--r-md);
   background: var(--surface);
-  box-shadow: var(--shadow-soft);
-  transition: transform var(--fast) var(--ease-out), box-shadow var(--fast) ease;
+  box-shadow: var(--elev-soft);
+  transition:
+    transform var(--fast) var(--ease-soft),
+    box-shadow var(--fast) ease;
 }
 
 .stat:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-lift);
+  box-shadow: var(--elev-lift);
 }
 
 .stat dt,
@@ -380,7 +318,7 @@
 }
 
 .gauge__label {
-  font-family: var(--font-hand);
+  font-family: var(--ff-hand);
   font-size: 1.15rem;
   color: var(--gauge);
 }
@@ -433,7 +371,7 @@
 /* ---------- Chart ---------- */
 .chart__plot {
   border: 1px solid var(--line);
-  border-radius: var(--radius-md);
+  border-radius: var(--r-md);
   background-color: var(--surface);
 }
 
@@ -480,7 +418,7 @@
 
 .chart__note {
   fill: var(--margin);
-  font-family: var(--font-hand);
+  font-family: var(--ff-hand);
   font-size: 20px;
 }
 
@@ -632,9 +570,11 @@
   min-height: 2.75rem;
   padding: 0.5rem 0.8rem;
   border: 1.5px solid var(--ink-3);
-  border-radius: var(--radius-sm);
+  border-radius: var(--r-sm);
   background: var(--surface);
-  transition: border-color var(--fast) ease, box-shadow var(--fast) ease;
+  transition:
+    border-color var(--fast) ease,
+    box-shadow var(--fast) ease;
 }
 
 .field input:hover,
@@ -687,6 +627,10 @@
 
 /* ---------- Buttons ---------- */
 .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   min-height: 2.75rem;
   padding: 0.5rem 1.2rem;
   border: 1.5px solid transparent;
@@ -695,7 +639,7 @@
   cursor: pointer;
   transition:
     background-color var(--fast) ease,
-    transform var(--fast) var(--ease-out),
+    transform var(--fast) var(--ease-soft),
     box-shadow var(--fast) ease;
 }
 
@@ -705,7 +649,7 @@
 
 .button:active:not(:disabled) {
   transform: translateY(1px) scale(0.98);
-  box-shadow: var(--shadow-press);
+  box-shadow: var(--elev-press);
 }
 
 .button:disabled {
@@ -760,7 +704,7 @@
 .moves__item {
   padding: 0.7rem 0.9rem;
   border-left: 4px solid var(--good);
-  border-radius: var(--radius-sm);
+  border-radius: var(--r-sm);
   background: var(--good-bg);
 }
 
@@ -771,15 +715,15 @@
 
 .toast {
   position: fixed;
-  inset: auto 1rem 1rem;
+  inset: auto 1rem 5.5rem;
   z-index: 20;
   max-width: 32rem;
   margin-inline: auto;
   padding: 0.85rem 1.1rem;
-  border-radius: var(--radius-md);
+  border-radius: var(--r-md);
   background: var(--ink);
   color: var(--surface);
-  box-shadow: var(--shadow-lift);
+  box-shadow: var(--elev-lift);
 }
 
 /* ---------- Loading states ---------- */
@@ -816,7 +760,7 @@
 
 .boot__brand {
   color: var(--ink);
-  font-family: var(--font-display);
+  font-family: var(--ff-display);
   font-size: 2.25rem;
   line-height: 1.1;
 }
@@ -836,7 +780,8 @@
   display: block;
   height: 0.9rem;
   border-radius: 999px;
-  background: linear-gradient(90deg, var(--paper-3) 40%, var(--paper-2) 50%, var(--paper-3) 60%) 0 0 / 300% 100%;
+  background: linear-gradient(90deg, var(--paper-3) 40%, var(--paper-2) 50%, var(--paper-3) 60%) 0 0 / 300%
+    100%;
 }
 
 .skeleton--title {
@@ -855,7 +800,7 @@
   padding: 0.9rem 1rem;
   border: 1px solid transparent;
   border-left: 5px solid var(--good);
-  border-radius: var(--radius-sm);
+  border-radius: var(--r-sm);
   background: var(--good-bg);
 }
 
@@ -876,7 +821,7 @@
 }
 
 .verdict__title {
-  font-family: var(--font-display);
+  font-family: var(--ff-display);
   font-size: 1.6rem;
   line-height: 1.15;
 }
@@ -890,7 +835,7 @@
   border: 2.5px solid currentcolor;
   border-radius: 8px;
   color: var(--good);
-  font-family: var(--font-hand);
+  font-family: var(--ff-hand);
   font-size: 1.05rem;
   font-weight: 700;
   letter-spacing: 0.06em;

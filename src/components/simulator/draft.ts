@@ -1,7 +1,7 @@
-import { formatINR } from '../../domain/format';
-import { parseAmount, parseDay, parseLabel } from '../../domain/sanitize';
-import type { Decision } from '../../domain/simulate';
-import type { Category, FinanceState, Snapshot } from '../../domain/types';
+import { formatINR } from '@/utils/format';
+import { parseAmount, parseDay, parseLabel } from '@/utils/sanitize';
+import type { Decision } from '@/engine/simulate';
+import type { Category, FinanceState, Snapshot } from '@/types/finance';
 
 /** Raw, unvalidated form values for the decision simulator. */
 export interface DecisionDraft {

@@ -11,19 +11,21 @@ Target: WCAG 2.2 level AA.
 
 ## Keyboard
 
-| Element | Keys |
-| --- | --- |
-| Skip link | First Tab stop; jumps to main content |
-| Tabs | Tab enters the tab list on the selected tab; Left/Right move and activate; Home/End jump to first/last; Tab moves into the panel |
-| Tab panel | Focusable, so content with no controls can still be reached and scrolled |
-| Forms | Native inputs, selects, checkbox and buttons; Enter submits |
-| Destructive actions | Two-step confirm; focus moves to the confirm button; "Keep my data" cancels |
+| Element             | Keys                                                                                                                                                                                |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Skip link           | First Tab stop; jumps to main content                                                                                                                                               |
+| Tabs                | Tab enters the tab list on the selected tab; Left/Right move and activate (Up/Down too when the list is vertical on desktop); Home/End jump to first/last; Tab moves into the panel |
+| Impulse slider      | Native range input: arrow keys, Page Up/Down, Home/End; its meaning is read from `aria-valuetext`                                                                                   |
+| Theme toggle        | A toggle button with `aria-pressed`                                                                                                                                                 |
+| Tab panel           | Focusable, so content with no controls can still be reached and scrolled                                                                                                            |
+| Forms               | Native inputs, selects, checkbox and buttons; Enter submits                                                                                                                         |
+| Destructive actions | Two-step confirm; focus moves to the confirm button; "Keep my data" cancels                                                                                                         |
 
 Every interactive element is a native `button`, `input`, `select` or `a`. There are no click handlers on non-interactive elements and no keyboard traps.
 
 ## Structure and semantics
 
-- Landmarks: `banner`, `main`, `contentinfo`. One `h1`; each card is a `section` labelled by its `h2`.
+- Landmarks: `banner`, `navigation` ("Primary"), `main`, `contentinfo`. One `h1`; each card is a `section` labelled by its `h2`.
 - Tabs follow the WAI-ARIA Authoring Practices pattern: `tablist`, `tab` with `aria-selected` and `aria-controls`, `tabpanel` with `aria-labelledby`, roving `tabindex`.
 - Statistics use a description list; the impact comparison is a real table with a caption and row and column headers.
 - Progress uses the native `progress` element with an accessible name.
@@ -46,6 +48,7 @@ Every interactive element is a native `button`, `input`, `select` or `a`. There 
 
 - The forecast chart has a title and a text description of today's balance, the month-end forecast and the shortfall day; the same text is visible as the caption.
 - The health gauge has a label stating the score and grade.
+- The month map has a full sentence per day for screen readers ("Day 4, spent ₹120, ₹130 in bills due.").
 - Decorative graphics (logo, stamp, dots, arrows, emoji) are hidden from assistive technology.
 
 ## Colour and contrast
@@ -53,7 +56,8 @@ Every interactive element is a native `button`, `input`, `select` or `a`. There 
 - Text colours were chosen for at least 4.5:1 on their backgrounds; input borders for at least 3:1.
 - Meaning never relies on colour alone: risk has a text label and score, impact changes say "Better" or "Worse", payment status is written out.
 - Focus is a 3 px ring with offset on every focusable element.
-- `forced-colors` mode keeps card and button boundaries visible.
+- `forced-colors` mode keeps card and button boundaries visible; `prefers-contrast: more` firms up borders.
+- Light and dark themes both meet the contrast targets; axe-core runs in each.
 
 ## Motion
 

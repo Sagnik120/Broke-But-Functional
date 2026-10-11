@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from 'react';
-import { formatINR } from '../../domain/format';
-import { createId } from '../../domain/id';
-import { parseAmount, parseLabel } from '../../domain/sanitize';
-import type { GoalStatus } from '../../domain/types';
-import { useFinance } from '../../state/useFinance';
-import { AmountField, Field } from '../ui/Field';
-import { ProgressBar } from '../ui/ProgressBar';
+import { formatINR } from '@/utils/format';
+import { createId } from '@/utils/id';
+import { parseAmount, parseLabel } from '@/utils/sanitize';
+import type { GoalStatus } from '@/types/finance';
+import { useFinance } from '@/hooks/useFinance';
+import { AmountField, Field } from '@/components/ui/Field';
+import { ProgressBar } from '@/components/ui/ProgressBar';
 
 function GoalCard({ goal }: { goal: GoalStatus }) {
   const { state, snapshot, dispatch, announce } = useFinance();
@@ -46,7 +46,12 @@ function GoalCard({ goal }: { goal: GoalStatus }) {
     <li className="plan">
       <div className="plan__head">
         <h3 className="list__label">{goal.label}</h3>
-        <button type="button" className="button button--small" onClick={remove} aria-label={`Remove goal ${goal.label}`}>
+        <button
+          type="button"
+          className="button button--small"
+          onClick={remove}
+          aria-label={`Remove goal ${goal.label}`}
+        >
           Remove
         </button>
       </div>
