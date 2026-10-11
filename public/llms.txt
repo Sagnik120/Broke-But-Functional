@@ -1,0 +1,14 @@
+# Broke But Functional
+
+> A client-only personal finance simulator: make ₹10,000 last 30 days and preview the effect of any money decision on balance, daily allowance, savings goals, forecast, risk and financial health.
+
+## Views
+
+- Overview: balance, safe-to-spend amount, forecast chart, risk and health
+- What if?: simulate a decision before applying it
+- Activity: log income and expenses
+- Plans: savings goals, subscriptions and commitments
+
+## Notes
+
+- No account, backend or API. Data is stored only in the visitor's browser.

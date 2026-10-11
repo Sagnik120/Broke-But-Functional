@@ -28,8 +28,29 @@ function contentSecurityPolicy(): Plugin {
   };
 }
 
+/** The UI font renders the largest text on screen, so fetch it alongside the CSS. */
+const CRITICAL_FONT = /figtree-latin-wght-normal.*\.woff2$/;
+
+function preloadCriticalFont(): Plugin {
+  return {
+    name: 'preload-critical-font',
+    apply: 'build',
+    transformIndexHtml(_html, context) {
+      const font = Object.keys(context.bundle ?? {}).find((file) => CRITICAL_FONT.test(file));
+      if (!font) return [];
+      return [
+        {
+          tag: 'link',
+          attrs: { rel: 'preload', as: 'font', type: 'font/woff2', href: `/${font}`, crossorigin: '' },
+          injectTo: 'head',
+        },
+      ];
+    },
+  };
+}
+
 export default defineConfig({
-  plugins: [react(), contentSecurityPolicy()],
+  plugins: [react(), contentSecurityPolicy(), preloadCriticalFont()],
   build: {
     target: 'es2022',
     sourcemap: false,

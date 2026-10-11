@@ -5,6 +5,8 @@ import { createDemoState, createEmptyState } from '../domain/seed';
 import { FinanceProvider } from '../state/FinanceProvider';
 import { useFinance } from '../state/useFinance';
 import { findA11yViolations, openTab, renderApp } from '../test/utils';
+import { createRateLimiter } from '../domain/rateLimit';
+import { DayControl } from './dashboard/DayControl';
 import { ErrorBoundary } from './ErrorBoundary';
 import Simulator from './simulator/Simulator';
 
@@ -289,5 +291,59 @@ describe('resilience', () => {
     expect(screen.getByText(/High risk/)).toBeInTheDocument();
     expect(screen.getAllByText(/runs out on day/).length).toBeGreaterThan(0);
     expect(await findA11yViolations(document.body)).toEqual([]);
+  });
+});
+
+describe('rate limiting', () => {
+  it('drops changes that arrive too fast and tells the user', async () => {
+    const user = userEvent.setup();
+    let time = 0;
+    render(
+      <FinanceProvider
+        initialState={createEmptyState()}
+        rateLimiter={createRateLimiter({ limit: 2, windowMs: 1000, now: () => time })}
+      >
+        <DayControl />
+      </FinanceProvider>,
+    );
+    const next = screen.getByRole('button', { name: 'Advance to the next day' });
+    await user.click(next);
+    await user.click(next);
+    expect(screen.getByText('3')).toBeInTheDocument();
+
+    await user.click(next);
+    expect(screen.getByText('3')).toBeInTheDocument();
+    expect(screen.getByRole('alert')).toHaveTextContent('going too fast');
+    // The blocked action's success message must not be announced.
+    expect(screen.getByRole('status')).toHaveTextContent('Now on day 3 of 30.');
+
+    time = 1500;
+    await user.click(next);
+    expect(screen.getByText('4')).toBeInTheDocument();
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+});
+
+describe('insights', () => {
+  it('suggests simulator-backed moves on the dashboard', async () => {
+    const { user } = renderApp();
+    expect(screen.getByRole('heading', { name: 'Smart moves' })).toBeInTheDocument();
+    expect(screen.getByText(/Cancelling Video streaming before day 20 frees ₹199/)).toBeInTheDocument();
+    await user.click(screen.getByRole('button', { name: 'Try one in the simulator' }));
+    expect(await screen.findByRole('heading', { name: 'What if I…' })).toBeInTheDocument();
+  });
+
+  it('breaks spending down by category', async () => {
+    const { user } = renderApp();
+    await openTab(user, 'Activity', 'Log money in or out');
+    expect(screen.getByRole('progressbar', { name: 'Food share of spending' })).toHaveValue(45);
+    expect(screen.getByText('₹540 · 45% of spending')).toBeInTheDocument();
+  });
+
+  it('shows empty insight states on a fresh month', async () => {
+    const { user } = renderApp(createEmptyState());
+    expect(screen.getByText(/You're on track\. Nothing needs fixing today\./)).toBeInTheDocument();
+    await openTab(user, 'Activity', 'Log money in or out');
+    expect(screen.getByText('Your spending by category will show up here.')).toBeInTheDocument();
   });
 });

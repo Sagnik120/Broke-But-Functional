@@ -1,0 +1,241 @@
+/*
+ * Motion with a job to do. Each animation explains a change:
+ *   rise        – a view or new entry arriving
+ *   sweep       – the highlighter marking the number that matters most
+ *   draw        – the balance line being plotted up to today
+ *   fill        – the health ring measuring the score
+ *   stamp       – a verdict being issued on a simulated decision
+ *   flip        – the calendar turning to a new day
+ *   pulse-ring  – a high-risk warning asking for attention
+ *   shimmer     – content is on its way (boot shell and lazy views)
+ * Only transform, opacity and paint-only properties animate, so layout never shifts.
+ */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+@keyframes sweep {
+  from {
+    background-size: 0% 100%;
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fill {
+  from {
+    stroke-dasharray: 0 400;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+@keyframes stamp {
+  0% {
+    opacity: 0;
+    transform: rotate(-14deg) scale(1.7);
+  }
+
+  60% {
+    opacity: 1;
+    transform: rotate(-5deg) scale(0.94);
+  }
+
+  100% {
+    transform: rotate(-5deg) scale(1);
+  }
+}
+
+@keyframes flip {
+  from {
+    opacity: 0;
+    transform: perspective(200px) rotateX(-80deg);
+  }
+}
+
+@keyframes pulse-ring {
+  from {
+    box-shadow: 0 0 0 0 rgb(173 50 38 / 45%);
+  }
+
+  to {
+    box-shadow: 0 0 0 10px rgb(173 50 38 / 0%);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+
+  to {
+    background-position: 0 0;
+  }
+}
+
+@keyframes nudge {
+  25% {
+    transform: translateX(-4px);
+  }
+
+  75% {
+    transform: translateX(4px);
+  }
+}
+
+/* Views arrive as a short stagger; the first block is never hidden so it paints immediately. */
+.panel > * {
+  animation: rise var(--medium) var(--ease-out) backwards;
+}
+
+.panel > :first-child {
+  animation-name: none;
+}
+
+.panel > :nth-child(2) {
+  animation-delay: 40ms;
+}
+
+.panel > :nth-child(3) {
+  animation-delay: 80ms;
+}
+
+.panel > :nth-child(4) {
+  animation-delay: 120ms;
+}
+
+.panel > :nth-child(n + 5) {
+  animation-delay: 160ms;
+}
+
+.list > * {
+  animation: rise var(--medium) var(--ease-out) backwards;
+}
+
+.highlight {
+  animation: sweep var(--slow) var(--ease-out) 200ms backwards;
+}
+
+.chart__line--actual {
+  stroke-dasharray: 1;
+  animation: draw 900ms var(--ease-out) backwards;
+}
+
+.chart__line--projected,
+.chart__note {
+  animation: fade-in var(--medium) ease-out 800ms backwards;
+}
+
+.chart__dot {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: pop var(--medium) var(--ease-spring) 700ms backwards;
+}
+
+.gauge__value {
+  animation: fill 900ms var(--ease-out) backwards;
+  transition: stroke-dasharray var(--slow) var(--ease-out), stroke var(--medium) ease;
+}
+
+.verdict__stamp {
+  animation: stamp 380ms var(--ease-out) backwards;
+}
+
+.verdict {
+  animation: rise var(--medium) var(--ease-out) backwards;
+}
+
+.day-control__day {
+  display: inline-block;
+  transform-origin: 50% 0;
+  animation: flip var(--medium) var(--ease-out) backwards;
+}
+
+.badge[data-tone='bad'] .badge__dot {
+  animation: pulse-ring 1.4s ease-out 3;
+}
+
+.field__error {
+  animation: nudge 240ms ease-in-out;
+}
+
+/* The loader writes a ledger page: outline, margin, then three lines of ink, on repeat. */
+@keyframes write {
+  0% {
+    stroke-dashoffset: 1;
+  }
+
+  45%,
+  85% {
+    stroke-dashoffset: 0;
+  }
+
+  100% {
+    stroke-dashoffset: 1;
+  }
+}
+
+.boot__mark > * {
+  stroke-dasharray: 1;
+  animation: write 1.8s var(--ease-out) infinite backwards;
+}
+
+.boot__margin {
+  animation-delay: 150ms;
+}
+
+.boot__rule:nth-of-type(2) {
+  animation-delay: 300ms;
+}
+
+.boot__rule:nth-of-type(3) {
+  animation-delay: 420ms;
+}
+
+.boot__rule:nth-of-type(4) {
+  animation-delay: 540ms;
+}
+
+.boot__line,
+.skeleton {
+  animation: shimmer 1.4s linear infinite;
+}
+
+.toast,
+.moves__item,
+.notice {
+  animation: rise var(--medium) var(--ease-out) backwards;
+}
+
+.progress::-webkit-progress-value {
+  transition: width var(--slow) var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}

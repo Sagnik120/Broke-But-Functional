@@ -1,0 +1,67 @@
+/*
+ * Pocket Ledger design tokens.
+ * A paper notebook: cream pages, navy ink, one ballpoint-blue accent,
+ * a marigold highlighter and a coral margin line. Light theme only.
+ */
+:root {
+  color-scheme: light;
+
+  /* Paper */
+  --paper: #faf6ee;
+  --paper-2: #f3eee2;
+  --paper-3: #e9e3d3;
+  --surface: #fffdf8;
+
+  /* Ink (all pass WCAG AA on paper and surface) */
+  --ink: #1c2233;
+  --ink-2: #4b5368;
+  --ink-3: #5f677b;
+
+  /* Lines */
+  --line: #e4dccb;
+  --line-2: #cfc6b1;
+  --rule: #d9e4f2;
+  --margin: #dd6b55;
+  --margin-soft: #f1b9ad;
+
+  /* Ballpoint pen: the single interactive accent */
+  --pen: #3350b0;
+  --pen-strong: #263f92;
+  --pen-50: #eef2fb;
+  --pen-100: #dbe4f8;
+  --on-pen: #ffffff;
+
+  /* Highlighter */
+  --marker: #f7dc7a;
+  --marker-50: #fff8de;
+
+  /* Status */
+  --good: #256b48;
+  --good-bg: #e1f1e6;
+  --warn: #855600;
+  --warn-bg: #fbefd2;
+  --bad: #ad3226;
+  --bad-bg: #fae3df;
+
+  --focus: var(--pen);
+
+  /* Shape and depth */
+  --radius: 22px;
+  --radius-md: 16px;
+  --radius-sm: 12px;
+  --shadow-soft: 0 1px 0 rgb(28 34 51 / 4%), 0 2px 10px -4px rgb(28 34 51 / 10%);
+  --shadow-lift: 0 2px 0 rgb(28 34 51 / 3%), 0 18px 40px -18px rgb(28 34 51 / 28%);
+  --shadow-press: inset 0 1px 2px rgb(28 34 51 / 14%);
+
+  /* Motion: quick and calm, because money UI should never feel jumpy */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --fast: 150ms;
+  --medium: 300ms;
+  --slow: 700ms;
+
+  /* Type */
+  --font-display: 'Instrument Serif', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --font-sans: 'Figtree Variable', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-hand: 'Kalam', 'Bradley Hand', 'Segoe Print', cursive;
+}

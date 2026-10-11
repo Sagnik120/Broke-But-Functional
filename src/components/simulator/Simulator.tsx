@@ -18,6 +18,12 @@ const VERDICT_TITLES = {
   risky: 'Not a good idea',
 } as const;
 
+const VERDICT_STAMPS = {
+  safe: 'Approved',
+  caution: 'Careful',
+  risky: 'Denied',
+} as const;
+
 interface SimulatorProps {
   /** Injectable randomness for deterministic curveballs in tests. */
   random?: () => number;
@@ -192,6 +198,9 @@ export default function Simulator({ random }: SimulatorProps) {
         {simulation ? (
           <>
             <div className="verdict" role="status" data-verdict={simulation.verdict}>
+              <span key={simulation.verdict} className="verdict__stamp" aria-hidden="true">
+                {VERDICT_STAMPS[simulation.verdict]}
+              </span>
               <p className="verdict__title">{VERDICT_TITLES[simulation.verdict]}</p>
               <p>{simulation.summary}</p>
             </div>

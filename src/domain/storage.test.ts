@@ -91,6 +91,18 @@ describe('loadState and saveState', () => {
     expect(loadState(null)).toBeNull();
   });
 
+  it('ignores oversized payloads without parsing them', () => {
+    const huge = JSON.stringify({ version: 1, currentDay: 3, padding: 'x'.repeat(250_000) });
+    expect(loadState(memoryStorage({ [STORAGE_KEY]: huge }))).toBeNull();
+  });
+
+  it('never lets stored keys pollute object prototypes', () => {
+    const hostile = '{"version":1,"currentDay":2,"__proto__":{"polluted":true},"constructor":{"prototype":{"polluted":true}}}';
+    const state = loadState(memoryStorage({ [STORAGE_KEY]: hostile }));
+    expect(state).toEqual({ ...createEmptyState(), currentDay: 2 });
+    expect(({} as Record<string, unknown>).polluted).toBeUndefined();
+  });
+
   it('fails soft when storage throws or is unavailable', () => {
     const broken = {
       getItem: () => {

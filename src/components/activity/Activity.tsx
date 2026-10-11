@@ -1,11 +1,13 @@
 import { useMemo, useState, type FormEvent } from 'react';
 import { CATEGORY_LABELS } from '../../domain/constants';
-import { formatINR } from '../../domain/format';
+import { formatINR, formatPercent } from '../../domain/format';
 import { createId } from '../../domain/id';
+import { spendingByCategory } from '../../domain/insights';
 import { parseAmount, parseLabel } from '../../domain/sanitize';
 import { CATEGORIES, type Category, type Transaction } from '../../domain/types';
 import { useFinance } from '../../state/useFinance';
 import { AmountField, Field, SelectField } from '../ui/Field';
+import { ProgressBar } from '../ui/ProgressBar';
 
 type EntryKind = 'expense' | 'income';
 
@@ -114,6 +116,8 @@ export default function Activity() {
     [state.transactions],
   );
 
+  const breakdown = useMemo(() => spendingByCategory(state), [state]);
+
   function remove(transaction: Transaction) {
     dispatch({ type: 'transaction/removed', id: transaction.id });
     announce(`Removed ${transaction.label}.`);
@@ -121,12 +125,35 @@ export default function Activity() {
 
   return (
     <div className="grid-2 grid-2--top">
-      <section className="card" aria-labelledby="add-heading">
-        <h2 id="add-heading" className="card__title">
-          Log money in or out
-        </h2>
-        <TransactionForm />
-      </section>
+      <div className="stack">
+        <section className="card" aria-labelledby="add-heading">
+          <h2 id="add-heading" className="card__title">
+            Log money in or out
+          </h2>
+          <TransactionForm />
+        </section>
+
+        <section className="card" aria-labelledby="breakdown-heading">
+          <h2 id="breakdown-heading" className="card__title">
+            Where it went
+          </h2>
+          {breakdown.length > 0 ? (
+            <ul className="list">
+              {breakdown.map((entry) => (
+                <li key={entry.category} className="goal">
+                  <span className="list__label">{entry.label}</span>
+                  <span className="list__meta">
+                    {formatINR(entry.amount)} · {formatPercent(entry.share)} of spending
+                  </span>
+                  <ProgressBar label={`${entry.label} share of spending`} value={entry.share} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>Your spending by category will show up here.</p>
+          )}
+        </section>
+      </div>
 
       <section className="card" aria-labelledby="history-heading">
         <h2 id="history-heading" className="card__title">

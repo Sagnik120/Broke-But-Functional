@@ -1,0 +1,10 @@
+{
+  "name": "Broke But Functional",
+  "short_name": "Broke But Functional",
+  "description": "Make ₹10,000 last 30 days. Simulate money decisions before you make them.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf6ee",
+  "theme_color": "#faf6ee",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

@@ -25,7 +25,11 @@ export function DayControl() {
         <span aria-hidden="true">←</span>
       </button>
       <p className="day-control__label">
-        Day <strong>{day}</strong> of {MONTH_DAYS}
+        Day{' '}
+        <strong key={day} className="day-control__day">
+          {day}
+        </strong>{' '}
+        of {MONTH_DAYS}
       </p>
       <button
         type="button"

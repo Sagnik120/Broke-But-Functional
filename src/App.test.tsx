@@ -24,6 +24,8 @@ describe('App shell', () => {
     expect(screen.getByRole('main')).toHaveAttribute('id', 'main');
     expect(screen.getByRole('contentinfo')).toBeInTheDocument();
     expect(screen.getByRole('tabpanel')).toHaveAccessibleName('Overview');
+    // The panel itself is a tab stop, so keyboard users can reach non-interactive content.
+    expect(screen.getByRole('tabpanel')).toHaveAttribute('tabindex', '0');
   });
 
   it('supports keyboard navigation across tabs with arrows, Home and End', async () => {

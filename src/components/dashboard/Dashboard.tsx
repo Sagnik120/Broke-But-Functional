@@ -1,17 +1,24 @@
+import { useMemo } from 'react';
 import { HEALTH_LABELS, RISK_LABELS } from '../../domain/constants';
 import { formatINR, formatPercent } from '../../domain/format';
+import { buildSuggestions } from '../../domain/insights';
 import { isUpcoming } from '../../domain/ledger';
 import { createDemoState, createEmptyState } from '../../domain/seed';
+import type { RiskLevel } from '../../domain/types';
 import { useFinance } from '../../state/useFinance';
+import { AnimatedNumber } from '../ui/AnimatedNumber';
+import { Badge, type BadgeTone } from '../ui/Badge';
 import { ConfirmButton } from '../ui/ConfirmButton';
 import { ProgressBar } from '../ui/ProgressBar';
 import { DayControl } from './DayControl';
 import { ForecastChart } from './ForecastChart';
 import { HealthGauge } from './HealthGauge';
 
+const RISK_TONES: Record<RiskLevel, BadgeTone> = { low: 'good', medium: 'warn', high: 'bad' };
+
 interface StatProps {
   label: string;
-  value: string;
+  value: number;
   note: string;
   tone?: 'good' | 'warn' | 'bad';
 }
@@ -20,7 +27,9 @@ function Stat({ label, value, note, tone }: StatProps) {
   return (
     <div className="stat" data-tone={tone}>
       <dt>{label}</dt>
-      <dd className="stat__value">{value}</dd>
+      <dd className="stat__value">
+        <AnimatedNumber value={value} />
+      </dd>
       <dd className="stat__note">{note}</dd>
     </div>
   );
@@ -36,6 +45,9 @@ export default function Dashboard({ onSimulate }: DashboardProps) {
     .filter((payment) => isUpcoming(payment, state.currentDay))
     .sort((a, b) => a.dueDay - b.dueDay);
 
+  const suggestions = useMemo(() => buildSuggestions(state, snapshot), [state, snapshot]);
+  const onPace = snapshot.burnRate <= snapshot.dailyAllowance;
+
   function replaceState(next: ReturnType<typeof createEmptyState>, message: string) {
     dispatch({ type: 'state/replaced', state: next });
     announce(message);
@@ -43,12 +55,21 @@ export default function Dashboard({ onSimulate }: DashboardProps) {
 
   return (
     <>
-      <section className="hero card" aria-labelledby="hero-heading">
-        <div>
+      <section className="hero card ruled" aria-labelledby="hero-heading">
+        <div className="hero__copy">
           <h2 id="hero-heading" className="eyebrow">
             Safe to spend today
           </h2>
-          <p className="hero__amount">{formatINR(snapshot.dailyAllowance)}</p>
+          <p className="hero__amount">
+            <span className="highlight">
+              <AnimatedNumber value={snapshot.dailyAllowance} />
+            </span>
+          </p>
+          <p className="hand-note" data-tone={onPace ? 'good' : 'bad'}>
+            {onPace
+              ? `You spend about ${formatINR(snapshot.burnRate)} a day. Under the line, keep going.`
+              : `You spend about ${formatINR(snapshot.burnRate)} a day. That's over the line.`}
+          </p>
           <p className="hero__note">
             {formatINR(snapshot.balance)} balance − {formatINR(snapshot.upcoming)} already promised, spread
             over {snapshot.daysLeft} {snapshot.daysLeft === 1 ? 'day' : 'days'}.
@@ -69,24 +90,24 @@ export default function Dashboard({ onSimulate }: DashboardProps) {
         <dl className="stats">
           <Stat
             label="Remaining balance"
-            value={formatINR(snapshot.balance)}
+            value={snapshot.balance}
             note={`of ${formatINR(snapshot.income)} income`}
             tone={snapshot.balance < 0 ? 'bad' : undefined}
           />
           <Stat
             label="Spent so far"
-            value={formatINR(snapshot.spent + snapshot.scheduledPaid)}
+            value={snapshot.spent + snapshot.scheduledPaid}
             note={`about ${formatINR(snapshot.burnRate)} a day on everyday stuff`}
           />
           <Stat
             label="Upcoming commitments"
-            value={formatINR(snapshot.upcoming)}
+            value={snapshot.upcoming}
             note={`${upcoming.length} ${upcoming.length === 1 ? 'payment' : 'payments'} still to come`}
             tone={snapshot.upcoming > snapshot.balance ? 'bad' : undefined}
           />
           <Stat
             label="Saved for goals"
-            value={formatINR(snapshot.saved)}
+            value={snapshot.saved}
             note={
               snapshot.goalsTarget > 0
                 ? `${formatPercent(snapshot.goalProgress)} of ${formatINR(snapshot.goalsTarget)}`
@@ -96,7 +117,7 @@ export default function Dashboard({ onSimulate }: DashboardProps) {
           />
           <Stat
             label="Month-end forecast"
-            value={formatINR(snapshot.projectedEnd)}
+            value={snapshot.projectedEnd}
             note={
               snapshot.shortfallDay === null
                 ? 'left on day 30 at this pace'
@@ -125,9 +146,9 @@ export default function Dashboard({ onSimulate }: DashboardProps) {
           <h2 id="risk-heading" className="card__title">
             Financial risk
           </h2>
-          <p className="badge" data-level={snapshot.risk.level}>
+          <Badge tone={RISK_TONES[snapshot.risk.level]}>
             {RISK_LABELS[snapshot.risk.level]} · {snapshot.risk.score}/100
-          </p>
+          </Badge>
           {snapshot.risk.reasons.length > 0 ? (
             <ul className="reasons">
               {snapshot.risk.reasons.map((reason) => (
@@ -139,6 +160,28 @@ export default function Dashboard({ onSimulate }: DashboardProps) {
           )}
         </section>
       </div>
+
+      <section className="card" aria-labelledby="moves-heading">
+        <h2 id="moves-heading" className="card__title">
+          Smart moves
+        </h2>
+        {suggestions.length > 0 ? (
+          <ul className="moves">
+            {suggestions.map((suggestion) => (
+              <li key={suggestion.id} className="moves__item" data-tone={suggestion.tone}>
+                {suggestion.text}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>You're on track. Nothing needs fixing today.</p>
+        )}
+        <p>
+          <button type="button" className="button button--ghost" onClick={onSimulate}>
+            Try one in the simulator
+          </button>
+        </p>
+      </section>
 
       <section className="card" aria-labelledby="forecast-heading">
         <h2 id="forecast-heading" className="card__title">

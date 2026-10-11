@@ -1,5 +1,6 @@
 import {
   MAX_AMOUNT,
+  MAX_STORED_CHARACTERS,
   MAX_GOALS,
   MAX_SCHEDULED,
   MAX_TRANSACTIONS,
@@ -127,7 +128,9 @@ function browserStorage(): Storage | null {
 export function loadState(storage: ReadableStorage | null = browserStorage()): FinanceState | null {
   try {
     const stored = storage?.getItem(STORAGE_KEY);
-    return stored ? parseState(JSON.parse(stored)) : null;
+    // Refuse oversized payloads before parsing so a bloated entry can't stall startup.
+    if (!stored || stored.length > MAX_STORED_CHARACTERS) return null;
+    return parseState(JSON.parse(stored));
   } catch {
     return null;
   }

@@ -1,9 +1,11 @@
 import { lazy, Suspense, useState } from 'react';
 import Dashboard from './components/dashboard/Dashboard';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { AnimatedNumber } from './components/ui/AnimatedNumber';
+import { BrandMark } from './components/ui/BrandMark';
+import { PanelSkeleton } from './components/ui/PanelSkeleton';
 import { panelId, tabId, Tabs, type TabItem } from './components/ui/Tabs';
 import { HEALTH_LABELS, MONTH_DAYS } from './domain/constants';
-import { formatINR } from './domain/format';
 import type { FinanceState } from './domain/types';
 import { FinanceProvider } from './state/FinanceProvider';
 import { useFinance } from './state/useFinance';
@@ -38,15 +40,22 @@ function Shell() {
       </a>
       <header className="masthead">
         <div className="masthead__inner">
-          <div>
-            <h1 className="brand">Broke But Functional</h1>
-            <p className="brand__tagline">₹10,000. 30 days. See the consequences before you spend.</p>
+          <div className="brand-block">
+            <BrandMark />
+            <div>
+              <h1 className="brand">
+                Broke But <em>Functional</em>
+              </h1>
+              <p className="brand__tagline">₹10,000. 30 days. See the consequences before you spend.</p>
+            </div>
           </div>
           <p className="masthead__summary">
             <span>
               Day {snapshot.day}/{MONTH_DAYS}
             </span>
-            <span>{formatINR(snapshot.balance)} left</span>
+            <span>
+              <AnimatedNumber value={snapshot.balance} /> left
+            </span>
             <span data-grade={snapshot.health.grade}>{HEALTH_LABELS[snapshot.health.grade]}</span>
           </p>
         </div>
@@ -61,9 +70,10 @@ function Shell() {
           role="tabpanel"
           id={panelId(active)}
           aria-labelledby={tabId(active)}
+          tabIndex={0}
         >
           <ErrorBoundary>
-            <Suspense fallback={<p className="card">Loading…</p>}>
+            <Suspense fallback={<PanelSkeleton />}>
               {active === 'overview' && <Dashboard onSimulate={openSimulator} />}
               {active === 'simulate' && <Simulator />}
               {active === 'activity' && <Activity />}
