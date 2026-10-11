@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import axe from 'axe-core';
-import App from '@/App';
-import type { FinanceState } from '@/types/finance';
+import App from '../App';
+import type { FinanceState } from '../domain/types';
 
 export function renderApp(initialState?: FinanceState) {
   const user = userEvent.setup();

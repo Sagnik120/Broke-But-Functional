@@ -1,11 +1,11 @@
 import { useState, type FormEvent } from 'react';
-import { formatINR } from '@/utils/format';
-import { createId } from '@/utils/id';
-import { scheduledStatus, type ScheduledStatus } from '@/engine/ledger';
-import { parseAmount, parseDay, parseLabel } from '@/utils/sanitize';
-import type { ScheduledKind, ScheduledPayment } from '@/types/finance';
-import { useFinance } from '@/hooks/useFinance';
-import { AmountField, Field, SelectField } from '@/components/ui/Field';
+import { formatINR } from '../../domain/format';
+import { createId } from '../../domain/id';
+import { scheduledStatus, type ScheduledStatus } from '../../domain/ledger';
+import { parseAmount, parseDay, parseLabel } from '../../domain/sanitize';
+import type { ScheduledKind, ScheduledPayment } from '../../domain/types';
+import { useFinance } from '../../state/useFinance';
+import { AmountField, Field, SelectField } from '../ui/Field';
 
 const STATUS_LABELS: Record<ScheduledStatus, string> = {
   paid: 'Paid',
@@ -123,9 +123,7 @@ export function ScheduledPanel() {
       <h2 id="scheduled-heading" className="card__title">
         Subscriptions and commitments
       </h2>
-      <p>
-        These are set aside before your daily allowance is calculated, and charged when their day arrives.
-      </p>
+      <p>These are set aside before your daily allowance is calculated, and charged when their day arrives.</p>
       {payments.length > 0 && (
         <ul className="list">
           {payments.map((payment) => (
@@ -135,11 +133,7 @@ export function ScheduledPanel() {
       )}
       <form className="form" onSubmit={handleSubmit} noValidate>
         <h3 className="subheading">New scheduled payment</h3>
-        <SelectField
-          label="Kind"
-          value={kind}
-          onChange={(event) => setKind(event.target.value as ScheduledKind)}
-        >
+        <SelectField label="Kind" value={kind} onChange={(event) => setKind(event.target.value as ScheduledKind)}>
           <option value="subscription">Subscription</option>
           <option value="commitment">Commitment (rent, fees, EMI)</option>
         </SelectField>

@@ -13,7 +13,7 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: var(--ff-sans);
+  font-family: var(--font-sans);
   font-size: 1rem;
   line-height: 1.5;
 }
@@ -73,7 +73,7 @@ main:focus {
   top: -4rem;
   z-index: 10;
   padding: 0.6rem 1rem;
-  border-radius: var(--r-sm);
+  border-radius: var(--radius-sm);
   background: var(--pen);
   color: var(--on-pen);
   font-weight: 600;
@@ -111,13 +111,12 @@ main:focus {
   padding-inline: 0.15em;
   margin-inline: -0.15em;
   border-radius: 0.2em 0.5em 0.3em 0.45em;
-  background: linear-gradient(transparent 52%, var(--marker) 52% 90%, transparent 90%) no-repeat 0 0 / 100%
-    100%;
+  background: linear-gradient(transparent 52%, var(--marker) 52% 90%, transparent 90%) no-repeat 0 0 / 100% 100%;
 }
 
 /* Handwritten margin note. */
 .hand-note {
-  font-family: var(--ff-hand);
+  font-family: var(--font-hand);
   font-size: 1.15rem;
   line-height: 1.35;
   color: var(--pen-strong);

@@ -5,5 +5,4 @@ import { afterEach } from 'vitest';
 afterEach(() => {
   cleanup();
   window.localStorage.clear();
-  window.history.replaceState(null, '', '/');
 });

@@ -1,66 +1,92 @@
-import { lazy, Suspense, useCallback, useState } from 'react';
-import { ErrorBoundary } from '@/components/common/ErrorBoundary';
-import { AppShell } from '@/components/layout/AppShell';
-import type { DecisionDraft } from '@/components/simulator/draft';
-import { PanelSkeleton } from '@/components/ui/PanelSkeleton';
-import { tabId } from '@/components/ui/Tabs';
-import { APP_NAME, ROUTES, type RouteId } from '@/constants/routes';
-import { FinanceProvider } from '@/context/FinanceProvider';
-import { ThemeProvider } from '@/context/ThemeProvider';
-import { useDocumentTitle } from '@/hooks/useDocumentTitle';
-import { useHashRoute } from '@/hooks/useHashRoute';
-import { usePrefetch } from '@/hooks/usePrefetch';
-import DashboardPage from '@/pages/DashboardPage';
-import type { FinanceState } from '@/types/finance';
+import { lazy, Suspense, useState } from 'react';
+import Dashboard from './components/dashboard/Dashboard';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { AnimatedNumber } from './components/ui/AnimatedNumber';
+import { BrandMark } from './components/ui/BrandMark';
+import { PanelSkeleton } from './components/ui/PanelSkeleton';
+import { panelId, tabId, Tabs, type TabItem } from './components/ui/Tabs';
+import { HEALTH_LABELS, MONTH_DAYS } from './domain/constants';
+import type { FinanceState } from './domain/types';
+import { FinanceProvider } from './state/FinanceProvider';
+import { useFinance } from './state/useFinance';
 
-// Route-level code splitting: the dashboard ships in the first bundle, every other view on demand.
-const loadSimulator = () => import('@/pages/SimulatorPage');
-const loadActivity = () => import('@/pages/ActivityPage');
-const loadPlans = () => import('@/pages/PlansPage');
+// Secondary views are split out so the dashboard paints with the smallest bundle.
+const Simulator = lazy(() => import('./components/simulator/Simulator'));
+const Activity = lazy(() => import('./components/activity/Activity'));
+const Plans = lazy(() => import('./components/plans/Plans'));
 
-const SimulatorPage = lazy(loadSimulator);
-const ActivityPage = lazy(loadActivity);
-const PlansPage = lazy(loadPlans);
+type TabId = 'overview' | 'simulate' | 'activity' | 'plans';
 
-const LAZY_ROUTES = [loadSimulator, loadActivity, loadPlans] as const;
+const TABS: ReadonlyArray<TabItem<TabId>> = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'simulate', label: 'What if?' },
+  { id: 'activity', label: 'Activity' },
+  { id: 'plans', label: 'Plans' },
+];
 
 function Shell() {
-  const [route, navigate] = useHashRoute();
-  const [prefill, setPrefill] = useState<Partial<DecisionDraft> | null>(null);
+  const { snapshot } = useFinance();
+  const [active, setActive] = useState<TabId>('overview');
 
-  const title = ROUTES.find((entry) => entry.id === route)?.title ?? APP_NAME;
-  useDocumentTitle(`${title} · ${APP_NAME}`);
-  usePrefetch(LAZY_ROUTES);
-
-  const handleNavigate = useCallback(
-    (id: RouteId) => {
-      setPrefill(null);
-      navigate(id);
-    },
-    [navigate],
-  );
-
-  /** Opens the simulator, optionally with a decision already filled in. */
-  const openSimulator = useCallback(
-    (draft?: Partial<DecisionDraft>) => {
-      setPrefill(draft ?? null);
-      navigate('simulate');
-      document.getElementById(tabId('simulate'))?.focus();
-    },
-    [navigate],
-  );
+  function openSimulator() {
+    setActive('simulate');
+    document.getElementById(tabId('simulate'))?.focus();
+  }
 
   return (
-    <AppShell route={route} onNavigate={handleNavigate}>
-      <ErrorBoundary>
-        <Suspense fallback={<PanelSkeleton />}>
-          {route === 'overview' && <DashboardPage onSimulate={openSimulator} />}
-          {route === 'simulate' && <SimulatorPage initialDraft={prefill} />}
-          {route === 'activity' && <ActivityPage />}
-          {route === 'plans' && <PlansPage />}
-        </Suspense>
-      </ErrorBoundary>
-    </AppShell>
+    <>
+      <a className="skip-link" href="#main">
+        Skip to main content
+      </a>
+      <header className="masthead">
+        <div className="masthead__inner">
+          <div className="brand-block">
+            <BrandMark />
+            <div>
+              <h1 className="brand">
+                Broke But <em>Functional</em>
+              </h1>
+              <p className="brand__tagline">₹10,000. 30 days. See the consequences before you spend.</p>
+            </div>
+          </div>
+          <p className="masthead__summary">
+            <span>
+              Day {snapshot.day}/{MONTH_DAYS}
+            </span>
+            <span>
+              <AnimatedNumber value={snapshot.balance} /> left
+            </span>
+            <span data-grade={snapshot.health.grade}>{HEALTH_LABELS[snapshot.health.grade]}</span>
+          </p>
+        </div>
+        <div className="masthead__inner">
+          <Tabs label="Budget views" tabs={TABS} active={active} onChange={setActive} />
+        </div>
+      </header>
+
+      <main id="main" tabIndex={-1}>
+        <div
+          className="panel"
+          role="tabpanel"
+          id={panelId(active)}
+          aria-labelledby={tabId(active)}
+          tabIndex={0}
+        >
+          <ErrorBoundary>
+            <Suspense fallback={<PanelSkeleton />}>
+              {active === 'overview' && <Dashboard onSimulate={openSimulator} />}
+              {active === 'simulate' && <Simulator />}
+              {active === 'activity' && <Activity />}
+              {active === 'plans' && <Plans />}
+            </Suspense>
+          </ErrorBoundary>
+        </div>
+      </main>
+
+      <footer className="footer">
+        <p>Your budget is stored only in this browser. No account, no tracking.</p>
+      </footer>
+    </>
   );
 }
 
@@ -70,10 +96,8 @@ interface AppProps {
 
 export default function App({ initialState }: AppProps) {
   return (
-    <ThemeProvider>
-      <FinanceProvider initialState={initialState}>
-        <Shell />
-      </FinanceProvider>
-    </ThemeProvider>
+    <FinanceProvider initialState={initialState}>
+      <Shell />
+    </FinanceProvider>
   );
 }

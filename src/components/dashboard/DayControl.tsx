@@ -1,6 +1,6 @@
-import { MONTH_DAYS } from '@/constants';
-import { earliestDay } from '@/engine/ledger';
-import { useFinance } from '@/hooks/useFinance';
+import { MONTH_DAYS } from '../../domain/constants';
+import { earliestDay } from '../../domain/ledger';
+import { useFinance } from '../../state/useFinance';
 
 /** Moves the calendar so users can watch bills land and the forecast play out. */
 export function DayControl() {

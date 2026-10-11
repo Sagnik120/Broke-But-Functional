@@ -1,5 +1,5 @@
-import { formatINR, formatPercent, formatSignedINR, formatSignedNumber } from '@/utils/format';
-import type { ImpactFormat, ImpactRow } from '@/engine/simulate';
+import { formatINR, formatPercent, formatSignedINR, formatSignedNumber } from '../../domain/format';
+import type { ImpactFormat, ImpactRow } from '../../domain/simulate';
 
 function formatValue(value: number, format: ImpactFormat): string {
   if (format === 'money') return formatINR(value);
@@ -41,9 +41,7 @@ export function ImpactTable({ rows }: { rows: ImpactRow[] }) {
               <td>{formatValue(row.after, row.format)}</td>
               <td className="impact__delta" data-effect={row.effect}>
                 {formatDelta(row.delta, row.format)}
-                {row.effect !== 'same' && (
-                  <span className="impact__effect"> · {EFFECT_TEXT[row.effect]}</span>
-                )}
+                {row.effect !== 'same' && <span className="impact__effect"> · {EFFECT_TEXT[row.effect]}</span>}
               </td>
             </tr>
           ))}

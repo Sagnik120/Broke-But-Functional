@@ -3,7 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 /** True when the browser can report motion preferences and the user hasn't asked for less motion. */
 export function prefersMotion(): boolean {
   return (
-    typeof window.matchMedia === 'function' && !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    typeof window.matchMedia === 'function' &&
+    !window.matchMedia('(prefers-reduced-motion: reduce)').matches
   );
 }
 

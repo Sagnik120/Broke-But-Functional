@@ -2,14 +2,14 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
-import { findA11yViolations } from '@/test/utils';
-import { Badge } from '@/components/ui/Badge';
-import { BrandMark } from '@/components/ui/BrandMark';
-import { ConfirmButton } from '@/components/ui/ConfirmButton';
-import { AmountField, Field, SelectField } from '@/components/ui/Field';
-import { PanelSkeleton } from '@/components/ui/PanelSkeleton';
-import { ProgressBar } from '@/components/ui/ProgressBar';
-import { Tabs } from '@/components/ui/Tabs';
+import { findA11yViolations } from '../../test/utils';
+import { Badge } from './Badge';
+import { BrandMark } from './BrandMark';
+import { ConfirmButton } from './ConfirmButton';
+import { AmountField, Field, SelectField } from './Field';
+import { PanelSkeleton } from './PanelSkeleton';
+import { ProgressBar } from './ProgressBar';
+import { Tabs } from './Tabs';
 
 describe('Field', () => {
   it('links its label, hint and error to the input', () => {
@@ -131,42 +131,6 @@ describe('Tabs', () => {
     expect(screen.getByRole('tab', { name: 'One' })).toHaveAttribute('aria-controls', 'panel-one');
     expect(screen.getAllByRole('tab').filter((tab) => tab.tabIndex === 0)).toHaveLength(1);
     expect(await findA11yViolations(container)).toEqual([]);
-  });
-
-  it('adds Up and Down arrows when the list is vertical', async () => {
-    const user = userEvent.setup();
-    function Vertical() {
-      const [active, setActive] = useState<(typeof TABS)[number]['id']>('one');
-      return <Tabs label="Side" tabs={TABS} active={active} onChange={setActive} orientation="vertical" />;
-    }
-    render(<Vertical />);
-    expect(screen.getByRole('tablist')).toHaveAttribute('aria-orientation', 'vertical');
-    await user.tab();
-    await user.keyboard('{ArrowDown}');
-    expect(screen.getByRole('tab', { name: 'Two' })).toHaveFocus();
-    await user.keyboard('{ArrowUp}{ArrowUp}');
-    expect(screen.getByRole('tab', { name: 'Three' })).toHaveAttribute('aria-selected', 'true');
-  });
-
-  it('ignores Up and Down arrows when the list is horizontal', async () => {
-    const user = userEvent.setup();
-    render(<Harness />);
-    await user.tab();
-    await user.keyboard('{ArrowDown}');
-    expect(screen.getByRole('tab', { name: 'One' })).toHaveAttribute('aria-selected', 'true');
-  });
-
-  it('renders decorative icons without changing the tab name', () => {
-    render(
-      <Tabs
-        label="Icons"
-        tabs={[{ id: 'a', label: 'Alpha', icon: <svg data-testid="icon" /> }]}
-        active="a"
-        onChange={() => undefined}
-      />,
-    );
-    expect(screen.getByRole('tab', { name: 'Alpha' })).toBeInTheDocument();
-    expect(screen.getByTestId('icon').parentElement).toHaveAttribute('aria-hidden', 'true');
   });
 
   it('moves selection and focus with the keyboard and mouse', async () => {

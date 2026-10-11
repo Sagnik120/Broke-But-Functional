@@ -1,56 +1,11 @@
-/*
- * Style entry point.
- * Tailwind supplies the reset and the responsive utilities used for layout.
- * The Pocket Ledger design system (tokens, components, shell, widgets, motion)
- * sits in Tailwind's cascade layers, so a utility class always wins over a
- * component class on the same element.
- */
-@import 'tailwindcss';
+/* Self-hosted fonts: no third-party requests, so the strict CSP stays intact. */
+@import '@fontsource/instrument-serif/latin-400.css';
+@import '@fontsource/instrument-serif/latin-400-italic.css';
+@import '@fontsource-variable/figtree/wght.css';
+@import '@fontsource/kalam/latin-400.css';
+@import '@fontsource/kalam/latin-700.css';
 
 @import './tokens.css';
-@import './base.css' layer(base);
-@import './components.css' layer(components);
-@import './shell.css' layer(components);
-@import './widgets.css' layer(components);
-@import './motion.css' layer(components);
-
-/* `dark:` utilities follow the in-app theme, which itself defaults to the system setting. */
-@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
-
-/* Expose the design tokens to Tailwind, so `bg-paper`, `text-ink-2`, `font-display` and friends exist. */
-@theme inline {
-  --color-paper: var(--paper);
-  --color-paper-2: var(--paper-2);
-  --color-paper-3: var(--paper-3);
-  --color-surface: var(--surface);
-  --color-ink: var(--ink);
-  --color-ink-2: var(--ink-2);
-  --color-ink-3: var(--ink-3);
-  --color-line: var(--line);
-  --color-line-2: var(--line-2);
-  --color-pen: var(--pen);
-  --color-pen-strong: var(--pen-strong);
-  --color-pen-50: var(--pen-50);
-  --color-pen-100: var(--pen-100);
-  --color-on-pen: var(--on-pen);
-  --color-marker: var(--marker);
-  --color-marker-50: var(--marker-50);
-  --color-margin: var(--margin);
-  --color-good: var(--good);
-  --color-good-bg: var(--good-bg);
-  --color-warn: var(--warn);
-  --color-warn-bg: var(--warn-bg);
-  --color-bad: var(--bad);
-  --color-bad-bg: var(--bad-bg);
-
-  --font-display: var(--ff-display);
-  --font-sans: var(--ff-sans);
-  --font-hand: var(--ff-hand);
-
-  --shadow-soft: var(--elev-soft);
-  --shadow-lift: var(--elev-lift);
-
-  --radius-card: var(--r-card);
-
-  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
-}
+@import './base.css';
+@import './components.css';
+@import './motion.css';

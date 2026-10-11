@@ -1,7 +1,7 @@
 import { act, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { AnimatedNumber } from '@/components/ui/AnimatedNumber';
-import { prefersMotion } from '@/hooks/useAnimatedNumber';
+import { AnimatedNumber } from '../components/ui/AnimatedNumber';
+import { prefersMotion } from './useAnimatedNumber';
 
 function stubMotionPreference(reduced: boolean) {
   vi.stubGlobal('matchMedia', (query: string) => ({ matches: reduced, media: query }));
